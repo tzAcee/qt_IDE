@@ -35,6 +35,7 @@ SOURCES += \
 
 HEADERS += \
     DarkStyle.h \
+    DragAndDropModel.h \
     editor.h \
     explorer.h \
     framelesswindow/framelesswindow.h \

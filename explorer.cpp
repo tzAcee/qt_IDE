@@ -1,9 +1,9 @@
 #include "explorer.h"
 
-Explorer::Explorer(QWidget *parent) : QTreeView(parent), _fsModel(new QFileSystemModel(this))
+Explorer::Explorer(QWidget *parent) : QTreeView(parent), _fsModel(new DragAndDropModel(this))
 {
     this->setModel(_fsModel);
-
+    _fsModel->setReadOnly(false);
     this->setRootIndex(_fsModel->setRootPath(QDir::currentPath()));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -13,9 +13,16 @@ Explorer::Explorer(QWidget *parent) : QTreeView(parent), _fsModel(new QFileSyste
     for(int i=1; i<8; i++)
         this->hideColumn(i);
     this->setHeaderHidden(true);
-    //this->header()->setColumn
 
       connect(this->selectionModel(),SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)),this,SLOT(select_change(const QItemSelection&,const QItemSelection&)));
+
+
+      //drag&drop
+      setDragDropMode(QAbstractItemView::InternalMove);
+      setSelectionMode(QAbstractItemView::ExtendedSelection);
+      setDragEnabled(true);
+      setAcceptDrops(true);
+      setDropIndicatorShown(true);
 }
 
 void Explorer::set_source(QString path)

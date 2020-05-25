@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include <QTreeView>
-#include <QFileSystemModel>
+//#include <QFileSystemModel>
+#include "DragAndDropModel.h"
 #include <QDebug>
 #include "editor.h"
 #include <QMenu>
@@ -17,7 +18,7 @@ public:
     void point_to_editor(Editor* ed);
     void set_source(QString path);
 private:
-    QFileSystemModel *_fsModel;
+    DragAndDropModel *_fsModel;
 
 private:
   Editor* _ed = nullptr;
