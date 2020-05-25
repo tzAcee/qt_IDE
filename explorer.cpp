@@ -37,7 +37,7 @@ void Explorer::mousePressEvent(QMouseEvent *e) {
     }
 }
 
-void Explorer::select_change(const QItemSelection& a,const QItemSelection& b)
+void Explorer::select_change(const QItemSelection& /*a*/,const QItemSelection& /*b*/)
 {
     if(_rightClicked) return;
   QModelIndexList list = selectionModel()->selectedIndexes();

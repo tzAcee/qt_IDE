@@ -19,8 +19,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    DarkStyle.cpp \
     editor.cpp \
     explorer.cpp \
+    framelesswindow/framelesswindow.cpp \
+    framelesswindow/windowdragger.cpp \
     highlighter.cpp \
     main.cpp \
     mainmenu.cpp \
@@ -31,8 +34,11 @@ SOURCES += \
     saver.cpp
 
 HEADERS += \
+    DarkStyle.h \
     editor.h \
     explorer.h \
+    framelesswindow/framelesswindow.h \
+    framelesswindow/windowdragger.h \
     highlighter.h \
     mainmenu.h \
     mainstatus.h \
@@ -42,8 +48,12 @@ HEADERS += \
     saver.h
 
 FORMS += \
+    framelesswindow/framelesswindow.ui \
     mainwindow.ui
 
+INCLUDEPATH += framelesswindow/
+RESOURCES += framelesswindow.qrc \
+            darkstyle.qrc
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

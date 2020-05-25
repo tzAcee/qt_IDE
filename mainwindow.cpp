@@ -19,7 +19,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->treeView->point_to_editor(ui->editor);
     ui->menubar->link_to_exp(ui->treeView);
     ui->menubar->link_ws_label(ui->label);
+    this->setStyleSheet("border: black");
 }
+
 
 MainWindow::~MainWindow()
 {
