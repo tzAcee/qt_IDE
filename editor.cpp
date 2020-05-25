@@ -11,11 +11,9 @@
 
 Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 {
-    //_ui = parent;
     lineNumberArea = new LineNumberArea(this);
-   // setFixedSize(500, 500);
 
-        highlighter = new Highlighter(document());
+    highlighter = new Highlighter(document());
 
     connect(this, SIGNAL (blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
     connect(this, SIGNAL (updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
@@ -68,7 +66,38 @@ void Editor::updateLineNumberArea(const QRect &rect, int dy)
         updateLineNumberAreaWidth(0);
 }
 
-//![slotUpdateRequest]
+void Editor::save()
+{
+    _status->set_msg("Saving ...");
+    _saver = new Saver(_currentFile, _src);
+    _saver->start();
+    _saver->wait();
+    _status->set_msg(_currentFile);
+    _changedFile = true;
+    _savePending = false;
+}
+
+void Editor::keyPressEvent(QKeyEvent *event)
+{
+    _keysPressed.insert((Qt::Key)event->key());
+
+    if(_keysPressed.size() == 2)
+    {
+        if(_keysPressed.contains(Qt::Key_S) && _keysPressed.contains(Qt::Key_Control))
+        {
+            if(_savePending)
+                save();
+        }
+        _keysPressed.clear();
+    }
+
+    return QPlainTextEdit::keyPressEvent(event);
+}
+
+void Editor::point_to_status(mainStatus *status)
+{
+    _status = status;
+}
 
 //![resizeEvent]
 
@@ -82,12 +111,13 @@ void Editor::resizeEvent(QResizeEvent *e)
 
 void Editor::set_source(QString path)
 {
+    _changedFile = false;
     _src = "";
     QFile _fl(path);
     if(!_fl.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::information(0, "error", _fl.errorString());
     }
-
+    _currentFile = _fl.fileName();
     QTextStream in(&_fl);
 
     while(!in.atEnd()) {
@@ -97,6 +127,9 @@ void Editor::set_source(QString path)
 
     _fl.close();
     this->setPlainText(_src);
+
+    _status->set_msg(_currentFile);
+    _changedFile = true;
 }
 
 bool Editor::get_bracket_erased()
@@ -143,6 +176,12 @@ void Editor::exchange_bracket(int pos)
 
 void Editor::on_text_change()
 {
+    if(_changedFile || _savePending == false)
+    {
+        _status->set_msg(_status->msg()+" [*]");
+        _changedFile = false;
+        _savePending = true;
+    }
     _erasing = get_bracket_erased();
      QTextCursor curCur = textCursor();
      exchange_bracket(curCur.position()-1);

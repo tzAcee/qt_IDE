@@ -23,13 +23,23 @@ SOURCES += \
     explorer.cpp \
     highlighter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainmenu.cpp \
+    mainstatus.cpp \
+    mainwindow.cpp \
+    qconsolewidget.cpp \
+    redirect.cpp \
+    saver.cpp
 
 HEADERS += \
     editor.h \
     explorer.h \
-    highlighter.hpp \
-    mainwindow.h
+    highlighter.h \
+    mainmenu.h \
+    mainstatus.h \
+    mainwindow.h \
+    qconsolewidget.h \
+    redirect.h \
+    saver.h
 
 FORMS += \
     mainwindow.ui

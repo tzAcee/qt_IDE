@@ -6,6 +6,7 @@
 #include <QFileSystemModel>
 #include <QDebug>
 #include "editor.h"
+#include <QMenu>
 
 class Explorer : public QTreeView
 {
@@ -20,9 +21,14 @@ private:
 
 private:
   Editor* _ed = nullptr;
+  bool _rightClicked = false;
+
+protected:
+  void mousePressEvent(QMouseEvent *e);
 
 private slots:
   void select_change(const QItemSelection& a,const QItemSelection& b);
+  void onCustomContextMenu(const QPoint &point);
 };
 
 #endif // EXPLORER_H

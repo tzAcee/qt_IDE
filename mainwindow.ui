@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>808</width>
-    <height>598</height>
+    <height>733</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,38 +26,72 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <widget class="Editor" name="editor">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>811</width>
-      <height>471</height>
-     </rect>
+   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="16,0">
+    <property name="spacing">
+     <number>10</number>
     </property>
-   </widget>
-   <widget class="Explorer" name="treeView">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>420</y>
-      <width>261</width>
-      <height>141</height>
-     </rect>
-    </property>
-   </widget>
+    <item>
+     <widget class="Editor" name="editor"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <item>
+       <widget class="QConsoleWidget" name="textEdit"/>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+        <item alignment="Qt::AlignRight">
+         <widget class="Explorer" name="treeView">
+          <property name="minimumSize">
+           <size>
+            <width>384</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font/>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
+  <widget class="mainMenu" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>808</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="mainStatus" name="statusBar"/>
  </widget>
  <customwidgets>
   <customwidget>
@@ -69,6 +103,21 @@
    <class>Explorer</class>
    <extends>QTreeView</extends>
    <header>explorer.h</header>
+  </customwidget>
+  <customwidget>
+   <class>mainStatus</class>
+   <extends>QStatusBar</extends>
+   <header>mainstatus.h</header>
+  </customwidget>
+  <customwidget>
+   <class>mainMenu</class>
+   <extends>QMenuBar</extends>
+   <header>mainmenu.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QConsoleWidget</class>
+   <extends>QTextEdit</extends>
+   <header>qconsolewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

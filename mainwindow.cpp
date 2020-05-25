@@ -15,8 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     //QPlainTextEdit *a = ui->centralwidget->findChild<QPlainTextEdit*>("editor");
       //  _editor = new Editor(a);
+    ui->editor->point_to_status(ui->statusBar);
     ui->treeView->point_to_editor(ui->editor);
-
+    ui->menubar->link_to_exp(ui->treeView);
+    ui->menubar->link_ws_label(ui->label);
 }
 
 MainWindow::~MainWindow()

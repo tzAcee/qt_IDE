@@ -3,7 +3,9 @@
 #define CODEEDITOR_H
 
 #include <QPlainTextEdit>
-#include "highlighter.hpp"
+#include "highlighter.h"
+#include "mainstatus.h"
+#include "saver.h"
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -27,10 +29,11 @@ public:
     int lineNumberAreaWidth();
 
     void set_source(QString path);
-        //QPlainTextEdit *_ui;
-
+    void point_to_status(mainStatus *status = nullptr);
+    void save();
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -41,17 +44,23 @@ private slots:
 private:
     QWidget *lineNumberArea;
     Highlighter *highlighter;
+    Saver *_saver;
 
+    mainStatus *_status;
+    QString _currentFile;
+    QSet<Qt::Key> _keysPressed;
 
     QString _src;
     bool _erasing = false;
+
+    bool _changedFile = false;
+    bool _savePending = false;
 
     void exchange_bracket(int pos);
     bool get_bracket_erased();
 };
 
-//![codeeditordefinition]
-//![extraarea]
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 class LineNumberArea : public QWidget
 {
