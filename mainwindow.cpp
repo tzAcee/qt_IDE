@@ -13,8 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     //_editor = new editor(ui->centralwidget->findChild("editor"));
     ui->setupUi(this);
-    QPlainTextEdit *a = ui->centralwidget->findChild<QPlainTextEdit*>("editor");
-        _editor = new Editor(a);
+    //QPlainTextEdit *a = ui->centralwidget->findChild<QPlainTextEdit*>("editor");
+      //  _editor = new Editor(a);
+    ui->treeView->point_to_editor(ui->editor);
 
 }
 

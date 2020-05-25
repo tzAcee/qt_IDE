@@ -3,14 +3,17 @@
 
 #include <QPainter>
 #include <QTextBlock>
+#include <QMessageBox>
+#include <QTextStream>
+
 
 //![constructor]
 
-Editor::Editor(QPlainTextEdit *parent) : QPlainTextEdit(parent)
+Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 {
     //_ui = parent;
     lineNumberArea = new LineNumberArea(this);
-    setFixedSize(500, 500);
+   // setFixedSize(500, 500);
 
         highlighter = new Highlighter(document());
 
@@ -75,6 +78,25 @@ void Editor::resizeEvent(QResizeEvent *e)
 
     QRect cr = contentsRect();
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+}
+
+void Editor::set_source(QString path)
+{
+    _src = "";
+    QFile _fl(path);
+    if(!_fl.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::information(0, "error", _fl.errorString());
+    }
+
+    QTextStream in(&_fl);
+
+    while(!in.atEnd()) {
+        QString line = in.readLine();
+        _src.append(line+"\n");
+    }
+
+    _fl.close();
+    this->setPlainText(_src);
 }
 
 bool Editor::get_bracket_erased()

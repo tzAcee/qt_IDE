@@ -21,10 +21,12 @@ class Editor : public QPlainTextEdit
     Q_OBJECT
 
 public:
-    Editor(QPlainTextEdit *parent = nullptr);
+    Editor(QWidget *parent = nullptr);
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
+
+    void set_source(QString path);
         //QPlainTextEdit *_ui;
 
 protected:
