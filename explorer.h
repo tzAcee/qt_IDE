@@ -7,6 +7,8 @@
 #include "DragAndDropModel.h"
 #include <QDebug>
 #include "editor.h"
+#include "debuggeredit.h"
+#include <QSignalMapper>
 #include <QMenu>
 
 class Explorer : public QTreeView
@@ -17,12 +19,13 @@ public:
 
     void point_to_editor(Editor* ed);
     void set_source(QString path);
+    void link_deb(debuggerEdit *deb);
+    void set_editorWS(const QString& ws);
 private:
-    DragAndDropModel *_fsModel;
-
-private:
+  DragAndDropModel *_fsModel;
   Editor* _ed = nullptr;
   bool _rightClicked = false;
+  debuggerEdit* _deb;
 
 protected:
   void mousePressEvent(QMouseEvent *e);
@@ -30,6 +33,9 @@ protected:
 private slots:
   void select_change(const QItemSelection& a,const QItemSelection& b);
   void onCustomContextMenu(const QPoint &point);
+  void del_file(const QString& fil);
+  void new_file(const QString& fil);
+  void new_dir(const QString& fil);
 };
 
 #endif // EXPLORER_H

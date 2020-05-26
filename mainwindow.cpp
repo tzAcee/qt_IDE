@@ -16,10 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     //QPlainTextEdit *a = ui->centralwidget->findChild<QPlainTextEdit*>("editor");
       //  _editor = new Editor(a);
     ui->editor->point_to_status(ui->statusBar);
+    ui->editor->point_to_debugger(ui->debuggerView);
     ui->treeView->point_to_editor(ui->editor);
     ui->menubar->link_to_exp(ui->treeView);
-    ui->menubar->link_ws_label(ui->label);
-    this->setStyleSheet("border: black");
+    ui->menubar->link_to_debugger(ui->debuggerView);
+    ui->treeView->link_deb(ui->debuggerView);
 }
 
 

@@ -19,7 +19,7 @@ public:
         if (!index.isValid())
             return 0;
 
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | QAbstractItemModel::flags(index);
+        return Qt::ItemIsDragEnabled |Qt::ItemIsEditable| Qt::ItemIsDropEnabled | QAbstractItemModel::flags(index);
     }
 };
 

@@ -5,17 +5,19 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QMutex>
 
 class Saver : public QThread
 {
   Q_OBJECT
 public:
-    Saver(QString path, QString content);
+    Saver(const QString& path, const QString& content);
 protected:
     void run();
 private:
-    QString &_path;
-    QString &_content;
+    QString _path;
+    QMutex mutex;
+    QString _content;
 };
 
 #endif // SAVER_H

@@ -1,6 +1,5 @@
 #include <QApplication>
 #include "DarkStyle.h"
-#include "framelesswindow.h"
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -14,12 +13,11 @@ int main(int argc, char *argv[])
 
 
     MainWindow w;
-    w.setWindowFlag(Qt::CustomizeWindowHint);
-     w.show();
+    w.show();
 
-     auto result = a.exec();
+    auto result = a.exec();
 
-     return result;
+    return result;
 }
 
 

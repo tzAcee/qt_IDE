@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include "explorer.h"
+#include "debuggeredit.h"
 
 class mainMenu : public QMenuBar
 {
@@ -13,13 +14,13 @@ class mainMenu : public QMenuBar
 public:
     mainMenu(QMainWindow *parent = nullptr);
     void link_to_exp(Explorer* e);
-    void link_ws_label(QLabel* lb);
+    void link_to_debugger(debuggerEdit *d);
 private slots:
     void open(QAction *a);
 
 private:
     Explorer *_exp;
-    QLabel *_wsLabel;
+    debuggerEdit *_deb;
 };
 
 #endif // MAINMENU_H

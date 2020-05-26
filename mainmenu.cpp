@@ -11,14 +11,15 @@ mainMenu::mainMenu(QMainWindow *parent):QMenuBar(parent)
     connect(fileMenu, SIGNAL(triggered(QAction*)), this, SLOT(open(QAction*)));
 }
 
-void mainMenu::open(QAction *a)
+void mainMenu::open(QAction*)
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open your Workspace"),
                                                     QDir::currentPath(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
     _exp->set_source(dir);
-    _wsLabel->setText(dir);
+    _exp->set_editorWS(dir);
+    _deb->info("Switched workspace to "+dir);
 }
 
 void mainMenu::link_to_exp(Explorer *e)
@@ -26,8 +27,9 @@ void mainMenu::link_to_exp(Explorer *e)
     _exp = e;
 }
 
-void mainMenu::link_ws_label(QLabel *lb)
+void mainMenu::link_to_debugger(debuggerEdit *d)
 {
-    _wsLabel = lb;
-    _wsLabel->setText(QDir::currentPath());
+    _deb = d;
 }
+
+

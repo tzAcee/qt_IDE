@@ -20,8 +20,25 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL (cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
     connect(this, SIGNAL (textChanged()), this, SLOT(on_text_change()));
 
+
+
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
+
+    set_ws(QDir::currentPath());
+
+}
+
+void Editor::insert_debug(const QString &msg)
+{
+    if(msg.contains("fatal error:"))
+             _deb->fatal(msg);
+         else if(msg.contains("warning:"))
+             _deb->warn(msg);
+         else if(msg.contains("error:"))
+             _deb->error(msg);
+         else
+             _deb->info(msg);
 }
 
 //![constructor]
@@ -68,17 +85,69 @@ void Editor::updateLineNumberArea(const QRect &rect, int dy)
 
 void Editor::save()
 {
-    _status->set_msg("Saving ...");
+    if(_currentFile.size() <= 0)
+    {
+        this->_deb->error("Select a file before you save something.");
+        return;
+    }
+
+    if(_saver != nullptr)
+    {
+        if(_saver->isRunning())
+        {
+        _deb->warn("A Save process is running!");
+        return;
+        }
+        delete _saver;
+    }
     _saver = new Saver(_currentFile, _src);
     _saver->start();
-    _saver->wait();
+    //_saver->wait();
     _status->set_msg(_currentFile);
     _changedFile = true;
     _savePending = false;
 }
 
+void Editor::point_to_debugger(debuggerEdit *d)
+{
+    _deb = d;
+}
+
+void Editor::compile()
+{
+    if(_ws.size() <= 0)
+    {
+        _deb->error("No Workspace set!");
+        return;
+    }
+    if(_clangC != nullptr)
+    {
+        if(_clangC->isRunning())
+        {
+        _deb->warn("A Build process is running!");
+        return;
+        }
+        delete _clangC;
+    }
+
+    _clangC = new Clang_Compiler(_ws);
+        connect(_clangC, SIGNAL(debug_add(const QString&)), this, SLOT(insert_debug(const QString&)));
+    _clangC->start();
+}
+
+Editor::~Editor()
+{
+    delete _clangC;
+    delete _saver;
+}
+
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key()==Qt::Key_F5)
+    {
+        compile();
+    }
+
     _keysPressed.insert((Qt::Key)event->key());
 
     if(_keysPressed.size() == 2)
@@ -109,7 +178,12 @@ void Editor::resizeEvent(QResizeEvent *e)
     lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void Editor::set_source(QString path)
+void Editor::set_ws(const QString &path)
+{
+    _ws =path;
+}
+
+void Editor::set_source(const QString &path)
 {
     _changedFile = false;
     _src = "";

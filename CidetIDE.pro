@@ -20,42 +20,42 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     DarkStyle.cpp \
+    clang_compiler.cpp \
+    debuggeredit.cpp \
     editor.cpp \
     explorer.cpp \
-    framelesswindow/framelesswindow.cpp \
-    framelesswindow/windowdragger.cpp \
     highlighter.cpp \
     main.cpp \
     mainmenu.cpp \
     mainstatus.cpp \
     mainwindow.cpp \
-    qconsolewidget.cpp \
-    redirect.cpp \
     saver.cpp
 
 HEADERS += \
     DarkStyle.h \
     DragAndDropModel.h \
+    clang_compiler.h \
+    debuggeredit.h \
     editor.h \
     explorer.h \
-    framelesswindow/framelesswindow.h \
-    framelesswindow/windowdragger.h \
     highlighter.h \
     mainmenu.h \
     mainstatus.h \
     mainwindow.h \
-    qconsolewidget.h \
-    redirect.h \
     saver.h
 
 FORMS += \
-    framelesswindow/framelesswindow.ui \
     mainwindow.ui
 
-INCLUDEPATH += framelesswindow/
-RESOURCES += framelesswindow.qrc \
+INCLUDEPATH +=
+RESOURCES += \
             darkstyle.qrc
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32: LIBS += -LE:/EProgs/prebuilt_clang/LLVM/lib/ -llibclang
+
+INCLUDEPATH += E:/EProgs/prebuilt_clang/LLVM/include
+DEPENDPATH += E:/EProgs/prebuilt_clang/LLVM/include

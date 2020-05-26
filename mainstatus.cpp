@@ -2,7 +2,7 @@
 
 mainStatus::mainStatus(QMainWindow *parent) : QStatusBar(parent)
 {
-    set_msg("TEST");
+    set_msg("Welcome!");
 }
 
 void mainStatus::set_msg(const QString msg)
