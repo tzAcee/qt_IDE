@@ -6,13 +6,16 @@
 #include <QMessageBox>
 #include <QTextStream>
 
+#include <QAbstractItemView>
+#include <QScrollBar>
+
 
 //![constructor]
 
 Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 {
     lineNumberArea = new LineNumberArea(this);
-
+    _completionPOP = new QCompleter(this);
     highlighter = new Highlighter(document());
 
     connect(this, SIGNAL (blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
@@ -21,12 +24,35 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
     connect(this, SIGNAL (textChanged()), this, SLOT(on_text_change()));
 
 
+    _completionPOP->setCaseSensitivity(Qt::CaseInsensitive);
+    _completionPOP->setWidget(this);
+    _completionPOP->setCompletionMode(QCompleter::PopupCompletion);
+
+
+    connect(_completionPOP, SIGNAL(activated(QString)), this, SLOT(insertCompletion(QString)));
+
 
     updateLineNumberAreaWidth(0);
     highlightCurrentLine();
 
     set_ws(QDir::currentPath());
 
+}
+void Editor::insertCompletion(const QString &completion)
+{
+    if(_completionPOP->widget() != this)
+        return;
+    QTextCursor tc = textCursor();
+    tc.select(QTextCursor::WordUnderCursor);
+    tc.removeSelectedText(); //capitalization may have been wrong, since we're doing case insensitive completing
+    tc.insertText(completion);
+    setTextCursor(tc);
+}
+
+void Editor::focusInEvent(QFocusEvent *e)
+{
+    _completionPOP->setWidget(this);
+    QPlainTextEdit::focusInEvent(e);
 }
 
 void Editor::insert_debug(const QString &msg)
@@ -139,10 +165,28 @@ Editor::~Editor()
 {
     delete _clangC;
     delete _saver;
+    delete _clangComplete;
 }
+
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    if(_completionPOP->popup()->isVisible())
+       {
+           switch (event->key())
+           {
+           case Qt::Key_Enter:
+           case Qt::Key_Return:
+           case Qt::Key_Escape:
+           case Qt::Key_Tab:
+           case Qt::Key_Backtab:
+               event->ignore();
+               return;
+           default:
+               break;
+           }
+       }
+
     if(event->key()==Qt::Key_F5)
     {
         compile();
@@ -159,6 +203,9 @@ void Editor::keyPressEvent(QKeyEvent *event)
         }
         _keysPressed.clear();
     }
+
+
+ // popup it up!
 
     return QPlainTextEdit::keyPressEvent(event);
 }
@@ -248,8 +295,21 @@ void Editor::exchange_bracket(int pos)
     }
 }
 
+void Editor::complete()
+{
+    QTextCursor cursor = textCursor();
+    int y = cursor.blockNumber() + 1;
+    int x = cursor.columnNumber() + 1;
+
+    _clangComplete = new Clang_Completion(_src, y, x);
+    connect(_clangComplete, SIGNAL(new_info(const QStringList&)), this, SLOT(on_complete_info(const QStringList&)));
+    _clangComplete->start();
+}
+
 void Editor::on_text_change()
 {
+
+
     if(_changedFile || _savePending == false)
     {
         _status->set_msg(_status->msg()+" [*]");
@@ -261,6 +321,7 @@ void Editor::on_text_change()
      exchange_bracket(curCur.position()-1);
 
     _src = toPlainText();
+        complete();
 }
 
 //![resizeEvent]
@@ -317,7 +378,34 @@ void Editor::lineNumberAreaPaintEvent(QPaintEvent *event)
         top = bottom;
         bottom = top + qRound(blockBoundingRect(block).height());
         ++blockNumber;
+
     }
 }
-//![extraAreaPaintEvent_2]
+
+void Editor::on_complete_info(const QStringList &msg)
+{
+    _completionPOP->setModel(new QStringListModel(msg, _completionPOP));
+
+    static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
+
+    QTextCursor tc = textCursor();
+    tc.select(QTextCursor::WordUnderCursor);
+    QString completionPrefix = tc.selectedText();
+    if (toPlainText().isEmpty() || eow.contains(completionPrefix.right(1)))
+    {
+        _completionPOP->popup()->hide();
+        return;
+    }
+
+    if (completionPrefix != _completionPOP->completionPrefix()) {
+        _completionPOP->setCompletionPrefix(completionPrefix);
+        _completionPOP->popup()->setCurrentIndex(_completionPOP->completionModel()->index(0, 0));
+    }
+
+    QRect cr = cursorRect();
+    cr.setWidth(_completionPOP->popup()->sizeHintForColumn(0)
+                + _completionPOP->popup()->verticalScrollBar()->sizeHint().width());
+
+    _completionPOP->complete(cr);
+}
 

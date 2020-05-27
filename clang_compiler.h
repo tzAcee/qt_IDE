@@ -1,9 +1,7 @@
 #ifndef CLANGER_H
 #define CLANGER_H
 
-#include <QWidget>
 #include <QThread>
-#include "debuggeredit.h"
 #include <clang-c/Index.h>
 #include <QDirIterator>
 #include <QMutex>

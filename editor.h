@@ -6,7 +6,11 @@
 #include "highlighter.h"
 #include "mainstatus.h"
 #include "clang_compiler.h"
+#include "clang_completion.h"
+#include "debuggeredit.h"
 #include "saver.h"
+#include <QStringListModel>
+#include <QCompleter>
 
 QT_BEGIN_NAMESPACE
 class QPaintEvent;
@@ -38,6 +42,7 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void focusInEvent(QFocusEvent *e) override;
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -45,13 +50,18 @@ private slots:
     void updateLineNumberArea(const QRect &rect, int dy);
     void on_text_change();
     void insert_debug(const QString &msg);
+    void on_complete_info(const QStringList &msg);
+    void insertCompletion(const QString &completion);
+
 
 private:
     QWidget *lineNumberArea;
     Highlighter *highlighter;
     debuggerEdit *_deb = nullptr;
     Saver *_saver = nullptr;
+    QCompleter *_completionPOP;
     Clang_Compiler *_clangC = nullptr;
+    Clang_Completion *_clangComplete = nullptr;
 
     mainStatus *_status;
     QString _currentFile;
@@ -67,6 +77,7 @@ private:
     void exchange_bracket(int pos);
     bool get_bracket_erased();
     void compile();
+    void complete();
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +101,7 @@ protected:
 
 private:
     Editor *codeEditor;
+
 };
 
 //![extraarea]

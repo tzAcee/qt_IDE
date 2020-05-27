@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     DarkStyle.cpp \
     clang_compiler.cpp \
+    clang_completion.cpp \
     debuggeredit.cpp \
     editor.cpp \
     explorer.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     DarkStyle.h \
     DragAndDropModel.h \
     clang_compiler.h \
+    clang_completion.h \
     debuggeredit.h \
     editor.h \
     explorer.h \
